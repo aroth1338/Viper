@@ -1,5 +1,5 @@
-from .Custom_Legend import *
-from .set_Axes_Color import *
+from viperviz import legend
+from viperviz import set_axes_color
 from scipy.stats import spearmanr
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +8,7 @@ def _zero_to_nan(values):
     """Replace every 0 with 'nan' and return a copy."""
     return [float('nan') if x==0 else x for x in values]
 
-def Pair_Plot(parameter_array, labels, **kwargs):
+def pairplot(parameter_array, labels, **kwargs):
     """
     Plots distribution of parameters, with marginal distributions on the diagonal and joint
     distributions everywhere else.
