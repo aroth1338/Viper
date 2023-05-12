@@ -17,7 +17,7 @@ setup(
     author='Adam Roth',
     author_email='aroth1338@gmail.com',
     # Needed to actually package something
-    packages=['viperviz', 'viperviz.ColorWheel'],
+    packages=['viperviz', 'viperviz.ColorWheel', 'viperviz.icons'],
     # Needed for dependencies
     install_requires=['numpy', 'matplotlib >= 3.5.0', 'pillow'],
     # *strongly* suggested for sharing
