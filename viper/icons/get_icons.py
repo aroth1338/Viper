@@ -1,30 +1,11 @@
-from PIL import Image
 import os
+from PIL import Image
+from color_wheel.conversion import hex_to_rgb, blend_colors
+import importlib.resources as pkg_resources
+from . import images
 
-head, tail = os.path.split(os.path.dirname(os.path.abspath(__file__)))
-images_path = os.path.join(head, "images")
+images_path = pkg_resources.files(images)
 
-def hex_to_rgb( hex_code, normalize = False):
-        """
-        Input: Hex String
-        Output: integer RGB values
-        """
-        hex_code = hex_code.lstrip("#")
-        RGB_vals = tuple(int(hex_code[i:i+2], 16) for i in (0, 2, 4))
-        
-        if normalize: 
-            RGB_vals = (RGB_vals[0] / 255, RGB_vals[1] / 255, RGB_vals[2] / 255)
-        
-        return RGB_vals
-    
-def blend_colors(colorRGBA1, colorRGBA2):
-    """
-    Blends two RGBA tuples evenly
-    """
-    red   = (colorRGBA1[0] * (255 - 128) + colorRGBA2[0] * 128) / 255
-    green = (colorRGBA1[1] * (255 - 128) + colorRGBA2[1] * 128) / 255
-    blue  = (colorRGBA1[2] * (255 - 128) + colorRGBA2[2] * 128) / 255
-    return (int(red), int(green), int(blue), 255)
 
 def healthy(color = "#000000"):
     fileName = "Young"
@@ -253,3 +234,6 @@ def punishment(color = "#000000"):
 
     img.putdata(newData)
     return img
+
+if __name__=='__main__':
+    print(images_path)
