@@ -17,7 +17,7 @@ setup(
     author='Adam Roth',
     author_email='aroth1338@gmail.com',
     # Needed to actually package something
-    packages=['viper', 'viper.ColorWheel', 'viper.icons'],
+    packages=['viper', 'viper.ColorWheel', 'viper.icons', "viper.main_plotting", "viper.plot_annotations"],
     # Needed for dependencies
     install_requires=['numpy', 'matplotlib >= 3.5.0', 'pillow'],
     # *strongly* suggested for sharing
