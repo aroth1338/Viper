@@ -5,19 +5,6 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 from dataclasses import dataclass, fields
 
-class _colorwheeldotdict(dict):
-    """dot.notation access to dictionary attributes"""
-    __setattr__: str = dict.__setitem__
-    __delattr__: str = dict.__delitem__
-    colors_used: str = []
-    
-    def __getattr__(self, key):
-        if key not in keys():
-            raise ValueError(f"No such color or method \"{key}\"")
-        else:
-            if key not in colors_used: colors_used.append(key)
-            return self[f"{key}"]
-
 @dataclass   
 class ColorWheel():
     """
