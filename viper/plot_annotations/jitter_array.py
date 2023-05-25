@@ -61,17 +61,17 @@ def jitter_array(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
         #get first row of data
         data = [x[i] for x in data_list]
         ax.plot(x_positions + noise, data,
-                 lw = lw, c = data_edge_color, alpha = circle_alpha, zorder = data_zorder-1)
+                 lw = lw, c = data_edge_color, alpha = circle_alpha, zorder = data_zorder-1, clip_on = False)
 
         ax.scatter(x_positions + noise, data,
                     s = circle_size, facecolors = 'none',
-                   edgecolors=data_color, alpha = circle_alpha, lw = circle_lw, zorder = data_zorder)
+                   edgecolors=data_color, alpha = circle_alpha, lw = circle_lw, zorder = data_zorder, clip_on = False)
         
     #Plot mean datapoints
     if include_mean:
         ax.plot(x_positions, [np.nanmean(array) for array in data_list],
-                     lw = 2*lw, c = mean_edge_color, alpha = 1, zorder = mean_zorder)
+                     lw = 2*lw, c = mean_edge_color, alpha = 1, zorder = mean_zorder, clip_on = False)
 
         ax.scatter(x_positions, [np.nanmean(array) for array in data_list],
                     s = circle_size, facecolors = mean_color,
-                   edgecolors=mean_color, alpha = 1, lw = circle_lw, zorder = mean_zorder)
+                   edgecolors=mean_color, alpha = 1, lw = circle_lw, zorder = mean_zorder, clip_on = False)
