@@ -26,31 +26,36 @@ class ColorWheel(_colorwheeldotdict):
         """
         Only define colors with Hex codes here.
         For any attributes that are not hex code colors, create a function with the @property decorator
-        For Examples see color_list and legacy_list
+        For Examples see color_list
         """
+        self.black  = "#000000"
+        self.white  = "#FFFFFF"
+
+        self.red = "#f63333"
+        self.blue = '#4169E1'
+        self.yellow = "#FFD966"
+        self.green = '#33cc33'
+        self.orange = '#E89D07'
+        self.purple = "#984FDE"
+
+        self.pink = "#E35D72"
         self.dark_red = "#C70808"
         self.dark_blue = "#23537F"
         self.light_blue = "#0BB8FD"
         self.light_orange = "#FD8B0B"
-        self.pink = "#E35D72"
+        
         self.dark_grey = "#727273"
         self.grey = "#919192"
         self.light_grey = "#B2B1B3"
-        self.purple = "#984FDE"
-        self.green = '#33cc33'
-        self.dark_blue_light = "#4f7598" #for black backgrounds
 
-        #Extras
-        self.black  = "#000000"
-        self.white  = "#FFFFFF"
-        self.orange = '#E89D07'
+        self.soft_dark_blue = "#4f7598" #for black backgrounds
+
         self.faded_orange = '#FFC859'
         self.burnt_orange = '#F76700'
-        self.blue = '#4169E1'
+        
         self.plum = '#881BE0'
         self.sunburst_orange = "#F76700"
         self.burnt_orange = "#CC5500"
-        self.yellow = "#FFD966"
         
         self.teal = '#4d9387'
         self.autumn = '#dd521b'
@@ -63,7 +68,7 @@ class ColorWheel(_colorwheeldotdict):
         self.light_brown = "#c86a00"
 
         self.bubblegum = "#FFC1CC"
-        self.red = "#f63333"
+        
         self.chartreuse = "#7fff00"
         self.light_green = "#00ff00"
         
@@ -87,17 +92,11 @@ class ColorWheel(_colorwheeldotdict):
     
     @property
     def color_list(self):
-        return [x for x in self.keys() if x not in self.legacy_list]
+        return [x for x in self.keys()]
     
     @property
     def color_list_hex(self):
-        return [self[x] for x in self.keys() if x not in self.legacy_list]
-    
-    @property
-    def legacy_list(self):
-        return ["pred_red", "prey_blue", "rak_blue", "rak_orange",
-                "rak_red", "prey_blue_light", "dark_blue_hc", "plum_blue",
-                "seth_blue", "seth_red", "adam_blue"]
+        return [self[x] for x in self.keys()]
     
     @property
     def random_color(self):
@@ -109,13 +108,6 @@ class ColorWheel(_colorwheeldotdict):
     
     def get_random_color(self, n = 1):
         return np.random.choice(list(self.values()), size = n, replace = False)
-    
-    def get_color_cycler(self):
-        """
-        Returns color list for matplotlib's color cycler
-        Ex:  mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color= ColorWheelInstance.get_color_cycler())
-        """
-        return [self.rak_blue, self.rak_orange, self.rak_red, self.green, self.prey_blue, self.pred_red]
     
     def in_wheel(self, inp):
         """
@@ -182,7 +174,7 @@ class ColorWheel(_colorwheeldotdict):
         else:
             return self.rgb_to_hex(rgb)
         
-    def blend_colors(self, color1, color2, ratio = .5):
+    def blend(self, color1, color2, ratio = .5):
         """
         Blends to given colors. Input must be hex code
         Returns blended color in hex code
@@ -198,7 +190,7 @@ class ColorWheel(_colorwheeldotdict):
         
         return self.rgb_to_hex((int(red), int(green), int(blue)))
 
-    def demo_colors(self, selection = "all", background = "white", no_legacy = True, fontname = "Dejavu Sans"):
+    def demo_colors(self, selection = "all", background = "white", fontname = "Dejavu Sans"):
         """
         Shows a plot demo for the available colors.
         set selection to 
@@ -206,14 +198,13 @@ class ColorWheel(_colorwheeldotdict):
             "selected", "selection", "used" for all colors accessed by the wheel
             list of color names or hex codes (can not mix both) for a specific selection of colors
         Change background to look at colors with different backgrounds
-        set no_legacy = True to see legacy color names
         set fontname to see different fonts
         Returns axis object
         """
         if self._isnotebook:
-            return self._demo_colors_notebook(background = background, selection = selection, no_legacy = no_legacy, fontname = fontname)
+            return self._demo_colors_notebook(background = background, selection = selection, fontname = fontname)
         else:
-            return self._demo_colors_spyder(background = background, selection = selection, no_legacy = no_legacy, fontname = fontname)
+            return self._demo_colors_spyder(background = background, selection = selection, fontname = fontname)
 
     def find_contrast_color(self, og_color, n = 1, hue_weight = 1, sat_weight = 1, lum_weight = 1, avoid = [], demo = False):
         """
@@ -230,7 +221,7 @@ class ColorWheel(_colorwheeldotdict):
 
         contrast_array = []
         for color in self.keys():
-            if color in self.legacy_list or color in ["white", "black", "dark_grey", "light_grey", "grey"] or self[color] in avoid:
+            if color in ["white", "black", "dark_grey", "light_grey", "grey"] or self[color] in avoid:
                 continue
             else:
                 new_hls = colorsys.rgb_to_hls(*mc.to_rgb(self[color]))
@@ -331,33 +322,17 @@ class ColorWheel(_colorwheeldotdict):
         hexrgb = hexrgb.lstrip("#")   
         r, g, b = (int(hexrgb[i:i+2], 16) / 255.0 for i in range(0,5,2))
         return colorsys.rgb_to_hsv(r, g, b)
-    
-    def _isnotebook(self):
-        try:
-            shell = get_ipython().__class__.__name__
-            if shell == 'ZMQInteractiveShell':
-                return True   # Jupyter notebook or qtconsole
-            elif shell == 'TerminalInteractiveShell':
-                return False  # Terminal running IPython
-            else:
-                return False  # Other type (?)
-        except NameError:
-            return False      # Probably standard Python interpreter
 
-    def _demo_colors_notebook(self, background = "white", selection = "all", no_legacy = True, fontname = "Dejavu Sans"):
+    def _demo_colors_notebook(self, background = "white", selection = "all", fontname = "Dejavu Sans"):
         """
         Shows a plot demo for the available colors.
         Change background to look at colors with different backgrounds
-        set no_legacy = True to see legacy color names
         Returns axis object
         """
         print(type(selection))
         
         if selection == "all":
-            if no_legacy:
-                color_keys = [x for x in self.keys() if x not in self.legacy_list] 
-            else:
-                color_keys = self.keys()
+            color_keys = self.keys()
         elif selection == "selection" or selection == "selected" or selection == "used":
             color_keys = self.colors_used
             
@@ -376,7 +351,7 @@ class ColorWheel(_colorwheeldotdict):
         color_list = [(x, self[x]) for x in color_keys]
         color_list.sort(key=self._get_hsv)
 
-        plt.figure(dpi = 300, figsize = (4, max(3, 7/28 * num_colors)))
+        fig = plt.figure(dpi = 150, figsize = (4, max(3, 7/28 * num_colors)))
         ax = plt.gca()
         plt.tight_layout()
         
@@ -403,20 +378,17 @@ class ColorWheel(_colorwheeldotdict):
         ax.spines.right.set_visible(False)
         ax.spines.top.set_visible(False)
         ax.set_facecolor(background)
+        fig.patch.set_color(self.none)
         return ax
     
-    def _demo_colors_spyder(self, background = "white", no_legacy = True, fontname = "Dejavu Sans"):
+    def _demo_colors_spyder(self, background = "white", fontname = "Dejavu Sans"):
         """
         Shows a plot demo for the available colors.
         Change background to look at colors with different backgrounds
-        set no_legacy = True to see legacy color names
         Returns axis object
         """
         if selection == "all":
-            if no_legacy:
-                color_keys = [x for x in self.keys() if x not in self.legacy_list] 
-            else:
-                color_keys = self.keys()
+            color_keys = self.keys()
         elif selection == "selection" or selection == "selected" or selection == "used":
             color_keys = self.colors_used
             
@@ -438,7 +410,7 @@ class ColorWheel(_colorwheeldotdict):
         else:
             n_plots = self.num_colors //10 + 1
             
-        fig, axes = plt.subplots(nrows = 1, ncols = n_plots, dpi = 300, figsize = (3 * n_plots, max(3, (7/28 * num_colors)/ n_plots)))
+        fig, axes = plt.subplots(nrows = 1, ncols = n_plots, dpi = 150, figsize = (3 * n_plots, max(3, (7/28 * num_colors)/ n_plots)))
         plt.subplots_adjust(wspace = 0)
         for j in range(n_plots):
             ax = axes[j]
@@ -472,12 +444,13 @@ class ColorWheel(_colorwheeldotdict):
             ax.spines.right.set_visible(False)
             ax.spines.top.set_visible(False)
             ax.set_facecolor(background)
+        fig.patch.set_color(self.none)
         plt.show()
         return ax
     
     def _get_name(self, hexcode):
         for x in self.keys():
-            if hexcode == self[x] and x not in self.legacy_list:
+            if hexcode == self[x]:
                 return x
             
     def __str__(self):
@@ -503,4 +476,3 @@ class ColorWheel(_colorwheeldotdict):
         except NameError:
             return False      # Probably standard Python interpreter
         
-    ## All Bove Current as of 0.9.0 ############################################################
