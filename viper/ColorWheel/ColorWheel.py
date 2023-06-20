@@ -106,6 +106,12 @@ class ColorWheel(_colorwheeldotdict):
     def none(self):
         return "none"
     
+    def get_name(self, hexcode):
+        for name, hex in zip(self.keys(), self.values()):
+            if hexcode == hex:
+                return name
+        return None
+
     def get_random_color(self, n = 1):
         return np.random.choice(list(self.values()), size = n, replace = False)
     
@@ -174,7 +180,7 @@ class ColorWheel(_colorwheeldotdict):
         else:
             return self.rgb_to_hex(rgb)
         
-    def blend(self, color1, color2, ratio = .5):
+    def blend(self, color1, color2, ratio = .5, demo = False):
         """
         Blends to given colors. Input must be hex code
         Returns blended color in hex code
@@ -188,7 +194,27 @@ class ColorWheel(_colorwheeldotdict):
         green = (colorRGBA1[1] * (255 - amount) + colorRGBA2[1] * amount) / 255
         blue  = (colorRGBA1[2] * (255 - amount) + colorRGBA2[2] * amount) / 255
         
-        return self.rgb_to_hex((int(red), int(green), int(blue)))
+        result = self.rgb_to_hex((int(red), int(green), int(blue)))
+
+        if demo:
+            color_list = [color1, color2, result]
+            plt.figure(dpi = 300, figsize = (3,3))
+            for i in range(len(color_list)):
+                plt.bar(1, i+1, color = color_list[i], zorder = -i, width = 1)
+                name = self.get_name(color_list[i])
+                if name == None and i > 1:
+                    name = "Blend Result"
+                elif name == None:
+                    name = color_list[i]
+                plt.text(1, i+.5, f"{name}", ha = "center", va = "center", color = "black")
+                plt.axhline(i+1, color = self.black)
+            plt.ylim(0, i+1)
+            plt.xlim(.5, 1.5)
+            plt.xticks([])
+            plt.yticks([])
+            plt.title(f"Blend Result")
+        
+        return result
 
     def demo_colors(self, selection = "all", background = "white", fontname = "Dejavu Sans"):
         """
@@ -243,7 +269,7 @@ class ColorWheel(_colorwheeldotdict):
             for i in range(len(x)):
                 plt.bar(1, i+1, color = x[-(i+1)], zorder = -i, width = 1)
                 plt.text(1, i+.5, self._get_name(x[-(i+1)]), ha = "center", va = "center", color = "white")
-                plt.axhline(i+1, color = wheel.black)
+                plt.axhline(i+1, color = self.black)
             plt.bar(0, i+1, color = og_color, width = 1)
             plt.ylim(0, i+1)
             plt.xlim(-.5, 1.5)
@@ -275,7 +301,7 @@ class ColorWheel(_colorwheeldotdict):
             for i in range(len(x)):
                 plt.bar(1, i+1, color = x[i], zorder = -i, width = 1)
                 plt.text(1, i+.5, f"{i}", ha = "center", va = "center", color = "black")
-                plt.axhline(i+1, color = wheel.black)
+                plt.axhline(i+1, color = self.black)
             plt.ylim(0, i+1)
             plt.xlim(.5, 1.5)
             plt.xticks([])
@@ -305,7 +331,7 @@ class ColorWheel(_colorwheeldotdict):
             raise ValueError("Input list does not contain valid color names or hex codes.")
 
         if all_names:
-            cmap_colors = [self.hex_to_rgb(wheel[x], normalize = True) for x in color_list]
+            cmap_colors = [self.hex_to_rgb(self[x], normalize = True) for x in color_list]
         elif all_hex:
             cmap_colors = [self.hex_to_rgb(x, normalize = True) for x in color_list]
 
@@ -458,7 +484,7 @@ class ColorWheel(_colorwheeldotdict):
         return ""
     
     def _get_hsv(self, hexrgb):
-        hexrgb = hexrgb[1]
+        if isinstance(hexrgb, tuple): hexrgb = hexrgb[1]
         hexrgb = hexrgb.lstrip("#")   
         r, g, b = (int(hexrgb[i:i+2], 16) / 255.0 for i in range(0,5,2))
         return colorsys.rgb_to_hsv(r, g, b)
