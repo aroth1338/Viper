@@ -85,6 +85,7 @@ class ColorWheel(_colorwheeldotdict):
         self.peach = "#EE5A5A"
 
         self.powder_blue = "#A6CDFD"
+        self.dusty_grape = "#695f82"
         
     @property
     def num_colors(self):
@@ -197,12 +198,12 @@ class ColorWheel(_colorwheeldotdict):
         result = self.rgb_to_hex((int(red), int(green), int(blue)))
 
         if demo:
-            color_list = [color1, color2, result]
+            color_list = [color1, result, color2]
             plt.figure(dpi = 300, figsize = (3,3))
             for i in range(len(color_list)):
                 plt.bar(1, i+1, color = color_list[i], zorder = -i, width = 1)
                 name = self.get_name(color_list[i])
-                if name == None and i > 1:
+                if name == None and i == 1:
                     name = "Blend Result"
                 elif name == None:
                     name = color_list[i]

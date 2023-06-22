@@ -2,7 +2,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np 
 
-def boxplot(ax, x, data, jitter_data = False, **kwargs):
+def boxplot(ax, x, data, jitter_data = False, clip_on = False, **kwargs):
 
     """
     A function to plot a box plot on a given matplotlib axis with additional options for jittered data. Will omit nans from the data. 
@@ -15,6 +15,8 @@ def boxplot(ax, x, data, jitter_data = False, **kwargs):
         The data to plot in the box plot.
     jitter_data : bool, optional
         If True, adds jittered data to the plot. Default is False.
+    clip_on : bool, optional
+        If True, allows data to clip past edges of the ax. Default is False.
     **kwargs : keyword arguments, optional
     
     Additional options to customize the plot, including:
@@ -94,12 +96,12 @@ def boxplot(ax, x, data, jitter_data = False, **kwargs):
         noise = np.random.normal(0, noise_scale, len(filtered_data))
         
         ax.scatter(x + noise, filtered_data,
-                s = data_size, facecolors = 'none',
+                s = data_size, facecolors = 'none', clip_on = clip_on,
                edgecolors=data_color, alpha = data_alpha, lw = data_lw, zorder = data_zorder)
             
         if include_mean:
             ax.scatter(x, np.nanmean(filtered_data) ,
-                        s = data_size, facecolors = mean_color,
+                        s = data_size, facecolors = mean_color, clip_on = clip_on,
                        edgecolors=mean_color, alpha = mean_alpha, lw = data_lw, zorder = mean_zorder)
         
     return ax
