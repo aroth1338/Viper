@@ -3,7 +3,7 @@ import colorsys
 import matplotlib.pyplot as plt        
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
-from Color import Color
+from .Color import Color
 from functools import cached_property
 import os
 
