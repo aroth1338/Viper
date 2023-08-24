@@ -3,9 +3,11 @@ import colorsys
 import matplotlib.pyplot as plt        
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
-from .Color import Color
+from Color import Color
 from functools import cached_property
 import os
+
+head, tail = os.path.split(os.path.dirname(os.path.abspath(__file__)))
 
 class _colorwheeldotdict(dict):
     """dot.notation access to dictionary attributes"""
@@ -32,8 +34,7 @@ class ColorWheel(_colorwheeldotdict):
         For Examples see color_list
         """
 
-        cwd = os.getcwd()
-        with open(os.path.join(cwd, "color_list.txt"), "r") as file:
+        with open(os.path.join(head, "color_list.txt"), "r") as file:
             for line in file.readlines():
                 clean = line.strip()
                 var_name = clean.split("=")
