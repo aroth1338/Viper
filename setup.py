@@ -11,7 +11,7 @@ with open('viper/__init__.py', 'rb') as f:
 
 setup(
     name='Viper',
-    url='https://github.com/aroth1338/ViperViz',
+    url='https://github.com/aroth1338/Viper',
     download_url = 'https://github.com/aroth1338/Viper',
     author='Adam Roth',
     author_email='aroth1338@gmail.com',
