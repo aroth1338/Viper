@@ -3,6 +3,8 @@ import colorsys
 import matplotlib.pyplot as plt        
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
+from Color import Color
+from functools import cached_property
 
 class _colorwheeldotdict(dict):
     """dot.notation access to dictionary attributes"""
@@ -24,69 +26,28 @@ class ColorWheel(_colorwheeldotdict):
     """
     def __init__(self):
         """
-        Only define colors with Hex codes here.
+        Only define colors with Hex codes in color_list.txt
         For any attributes that are not hex code colors, create a function with the @property decorator
         For Examples see color_list
         """
-        self.black  = "#000000"
-        self.white  = "#FFFFFF"
 
-        self.red = "#f63333"
-        self.blue = '#4169E1'
-        self.yellow = "#FFD966"
-        self.green = '#33cc33'
-        self.orange = '#E89D07'
-        self.purple = "#984FDE"
+        with open("color_list.txt", "r") as file:
+            for line in file.readlines():
+                clean = line.strip()
+                var_name = clean.split("=")
 
-        self.pink = "#E35D72"
-        self.dark_red = "#C70808"
-        self.dark_blue = "#23537F"
-        self.light_blue = "#0BB8FD"
-        self.light_orange = "#FD8B0B"
-        
-        self.dark_grey = "#727273"
-        self.grey = "#919192"
-        self.light_grey = "#B2B1B3"
+                #Not a line break or a comment
+                if var_name[0] !=  "" and var_name[0][0] != "#":
+                    self[var_name[0].strip()] = var_name[1].strip()
 
-        self.soft_dark_blue = "#4f7598" #for black backgrounds
+    @cached_property
+    def object(self):
+        tmp_object = _colorwheeldotdict()
 
-        self.faded_orange = '#FFC859'
-        self.burnt_orange = '#F76700'
-        
-        self.plum = '#881BE0'
-        self.sunburst_orange = "#F76700"
-        self.burnt_orange = "#CC5500"
-        
-        self.teal = '#4d9387'
-        self.autumn = '#dd521b'
-        self.spearmint = "#45B08C"
-        self.mint      = "#AAF0D1"
-        self.dark_blue2  = "#016b93"
+        for key in self.keys():
+            tmp_object[key] = Color(self[key])
+        return tmp_object
 
-        self.dark_brown  = "#854600"
-        self.brown        = "#9e5300"
-        self.light_brown = "#c86a00"
-
-        self.bubblegum = "#FFC1CC"
-        
-        self.chartreuse = "#7fff00"
-        self.light_green = "#00ff00"
-        
-        self.vibrant_red = "#FA0000"
-        self.jean_blue   = "#2D74B4"
-        self.matcha = "#C3D4A5"
-
-        self.lavender = "#c195eb" 
-        self.dark_periwinkle = '#8375FF'
-        self.periwinkle = "#CCCCFF"
-        self.scarlet = "#FF2400"
-        self.sunflower = "#FFDA03"
-        self.wine = "#B31E6F"
-        self.peach = "#EE5A5A"
-
-        self.powder_blue = "#A6CDFD"
-        self.dusty_grape = "#695f82"
-        
     @property
     def num_colors(self):
         return len(self.color_list)
@@ -228,10 +189,10 @@ class ColorWheel(_colorwheeldotdict):
         set fontname to see different fonts
         Returns axis object
         """
-        if self._isnotebook:
-            return self._demo_colors_notebook(background = background, selection = selection, fontname = fontname)
+        if self.__isnotebook:
+            return self.__demo_colors_notebook(background = background, selection = selection, fontname = fontname)
         else:
-            return self._demo_colors_spyder(background = background, selection = selection, fontname = fontname)
+            return self.__demo_colors_spyder(background = background, selection = selection, fontname = fontname)
 
     def find_contrast_color(self, og_color, n = 1, hue_weight = 1, sat_weight = 1, lum_weight = 1, avoid = [], demo = False):
         """
@@ -269,14 +230,14 @@ class ColorWheel(_colorwheeldotdict):
             plt.figure(dpi = 300, figsize = (4,3))
             for i in range(len(x)):
                 plt.bar(1, i+1, color = x[-(i+1)], zorder = -i, width = 1)
-                plt.text(1, i+.5, self._get_name(x[-(i+1)]), ha = "center", va = "center", color = "white")
+                plt.text(1, i+.5, self.get_name(x[-(i+1)]), ha = "center", va = "center", color = "white")
                 plt.axhline(i+1, color = self.black)
             plt.bar(0, i+1, color = og_color, width = 1)
             plt.ylim(0, i+1)
             plt.xlim(-.5, 1.5)
             plt.xticks([])
             plt.yticks([])
-            plt.title(f"Contrasting {self._get_name(og_color)}")
+            plt.title(f"Contrasting {self.get_name(og_color)}")
         return return_array
     
     def luminance_gradient(self, color, n = 5, allow_darker = False, demo = False):
@@ -307,7 +268,7 @@ class ColorWheel(_colorwheeldotdict):
             plt.xlim(.5, 1.5)
             plt.xticks([])
             plt.yticks([])
-            plt.title(f"Luminance Gradient for {self._get_name(hex_color)}")
+            plt.title(f"Luminance Gradient for {self.get_name(hex_color)}")
             
         return luminance_list
     
@@ -350,7 +311,7 @@ class ColorWheel(_colorwheeldotdict):
         r, g, b = (int(hexrgb[i:i+2], 16) / 255.0 for i in range(0,5,2))
         return colorsys.rgb_to_hsv(r, g, b)
 
-    def _demo_colors_notebook(self, background = "white", selection = "all", fontname = "Dejavu Sans"):
+    def __demo_colors_notebook(self, background = "white", selection = "all", fontname = "Dejavu Sans"):
         """
         Shows a plot demo for the available colors.
         Change background to look at colors with different backgrounds
@@ -365,7 +326,7 @@ class ColorWheel(_colorwheeldotdict):
             
         elif isinstance(selection, list) and len(selection) > 0:
             if selection[0][0] == "#": #hex codes, need names
-                color_keys = [self._get_name(x) for x in selection]
+                color_keys = [self.get_name(x) for x in selection]
             else:
                 color_keys = selection
             
@@ -408,7 +369,7 @@ class ColorWheel(_colorwheeldotdict):
         fig.patch.set_color(self.none)
         return ax
     
-    def _demo_colors_spyder(self, background = "white", fontname = "Dejavu Sans"):
+    def __demo_colors_spyder(self, background = "white", selection = "all", fontname = "Dejavu Sans"):
         """
         Shows a plot demo for the available colors.
         Change background to look at colors with different backgrounds
@@ -491,7 +452,7 @@ class ColorWheel(_colorwheeldotdict):
         return colorsys.rgb_to_hsv(r, g, b)
 
     @property
-    def _isnotebook(self):
+    def __isnotebook(self):
         try:
             shell = get_ipython().__class__.__name__
             if shell == 'ZMQInteractiveShell':

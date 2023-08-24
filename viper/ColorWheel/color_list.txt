@@ -1,0 +1,56 @@
+black  = #000000
+white  = #FFFFFF
+
+red = #f63333
+blue = #4169E1
+yellow = #FFEA00
+green = #33cc33
+orange = #E89D07
+purple = #984FDE
+pink = #E35D72
+
+dark_red = #C70808
+dark_blue = #23537F
+light_blue = #0BB8FD
+light_orange = #FD8B0B
+dark_grey = #727273
+grey = #919192
+light_grey = #B2B1B3
+
+soft_dark_blue = #4f7598
+creamsicle = #FFC859
+burnt_orange = #F76700
+plum = #881BE0
+sunburst_orange = #F76700
+burnt_orange = #CC5500
+
+teal = #4d9387
+autumn = #dd521b
+spearmint = #45B08C
+mint      = #AAF0D1
+dark_blue2  = #016b93
+
+dark_brown  = #854600
+brown        = #9e5300
+light_brown = #c86a00
+
+bubblegum = #FFC1CC
+chartreuse = #7fff00
+light_green = #00ff00
+
+vibrant_red = #FA0000
+jean_blue   = #2D74B4
+matcha = #C3D4A5
+
+lavender = #c195eb 
+dark_periwinkle = #8375FF
+periwinkle = #CCCCFF
+scarlet = #FF2400
+sunflower = #FFDA03
+
+wine = #B31E6F
+peach = #EE5A5A
+powder_blue = #A6CDFD
+dusty_grape = #695f82
+
+lemon = #FAFA33
