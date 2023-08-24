@@ -71,6 +71,10 @@ class ColorWheel(_colorwheeldotdict):
     def none(self):
         return "none"
     
+    @property
+    def bold(self):
+        return "bold"
+    
     def get_name(self, hexcode):
         for name, hex in zip(self.keys(), self.values()):
             if hexcode == hex:
