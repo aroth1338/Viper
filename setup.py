@@ -15,7 +15,7 @@ setup(
     download_url = 'https://github.com/aroth1338/Viper',
     author='Adam Roth',
     author_email='aroth1338@gmail.com',
-    packages=['viper', 'viper.ColorWheel', 'viper.ColorWheel.color_list.txt', 'viper.icons', "viper.main_plotting", "viper.plot_annotations"],
+    packages=['viper', 'viper.ColorWheel', 'viper.icons', "viper.main_plotting", "viper.plot_annotations"],
     #dependencies
     install_requires=['numpy', 'matplotlib >= 3.5.0', 'pillow'],
     version=version,
