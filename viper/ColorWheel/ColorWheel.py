@@ -34,7 +34,7 @@ class ColorWheel(_colorwheeldotdict):
         For Examples see color_list
         """
 
-        with open(os.path.join(head, "color_list.txt"), "r") as file:
+        with open(os.path.join(head, "ColorWheel", "color_list.txt"), "r") as file:
             for line in file.readlines():
                 clean = line.strip()
                 var_name = clean.split("=")
