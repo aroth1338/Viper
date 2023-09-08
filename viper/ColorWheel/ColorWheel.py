@@ -7,7 +7,7 @@ import importlib
 from functools import cached_property
 import os
 
-importlib.import_module(".Color", "viper.ColorWheel")
+Color = importlib.import_module(".Color", "viper.ColorWheel").Color
 
 head, tail = os.path.split(os.path.dirname(os.path.abspath(__file__)))
 
@@ -46,7 +46,7 @@ class ColorWheel(_colorwheeldotdict):
                     self[var_name[0].strip()] = var_name[1].strip()
 
     @cached_property
-    def object(self):
+    def object_list(self):
         tmp_object = _colorwheeldotdict()
 
         for key in self.keys():
