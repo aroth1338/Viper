@@ -3,9 +3,11 @@ import colorsys
 import matplotlib.pyplot as plt        
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
-from .Color import Color
+import importlib
 from functools import cached_property
 import os
+
+importlib.import_module(".Color", "viper.ColorWheel")
 
 head, tail = os.path.split(os.path.dirname(os.path.abspath(__file__)))
 
