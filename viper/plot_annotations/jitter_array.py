@@ -51,7 +51,7 @@ def jitterdata(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
     x_positions = np.array(x_positions)
     
     #plot individual datapoints
-    if if isinstance(data_list, list): 
+    if isinstance(data_list, list): 
         data_length = len(data_list)
     else: #2D array
         data_length = len(data_list[0])
