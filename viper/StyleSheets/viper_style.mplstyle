@@ -1,0 +1,68 @@
+# Set black background default line colors to white.
+
+lines.color: white
+patch.edgecolor: white
+
+text.color: white
+
+xtick.color: white
+ytick.color: white
+
+grid.color: white
+
+figure.facecolor: black
+figure.edgecolor: black
+
+savefig.facecolor: black
+savefig.edgecolor: black
+
+### Boxplots
+boxplot.boxprops.color: white
+boxplot.boxprops.linewidth: 2.5
+boxplot.capprops.color: white
+boxplot.capprops.linewidth: 2.5
+boxplot.flierprops.color: white
+boxplot.flierprops.markeredgecolor: white
+boxplot.whiskerprops.color: white
+boxplot.whiskerprops.linewidth: 2.0
+
+### Fonts
+font.family:  sans-serif
+font.style:   normal
+font.variant: normal
+font.weight:  normal
+font.stretch: normal
+font.size:    12.0
+
+### Axes 
+axes.facecolor: black
+axes.edgecolor: white
+axes.linewidth: 1.2
+axes.grid: False
+axes.titlesize: 18.0
+axes.titleweight: bold
+axes.titlecolor: white
+axes.titlepad: 6.0
+axes.labelsize: 16.0
+axes.labelweight: bold
+
+axes.labelcolor: white
+axes.prop_cycle: cycler('color', ['0BB8FD', 'FD8B0B', 'E35D72', '4f7598', 'C70808', '881BE0', 'FA0000'])
+
+axes.spines.left:   True  # display axis spines
+axes.spines.bottom: True
+axes.spines.top:    False
+axes.spines.right:  False
+### Ticks
+xtick.labelsize: 12.5
+ytick.labelsize: 12.5
+
+### Figures
+figure.dpi: 150
+figure.titlesize: 20
+figure.titleweight: bold
+
+### Savefig parameters
+savefig.dpi: 300
+savefig.transparent: True
+savefig.format: png
