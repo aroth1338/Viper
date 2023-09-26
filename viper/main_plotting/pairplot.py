@@ -1,5 +1,3 @@
-from viper import legend
-from viper import set_axes_color
 from scipy.stats import spearmanr
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,6 +5,83 @@ import numpy as np
 def _zero_to_nan(values):
     """Replace every 0 with 'nan' and return a copy."""
     return [float('nan') if x==0 else x for x in values]
+
+from matplotlib.lines import Line2D
+
+def legend(ax, labels, colors, ncol = 1,
+                 fontsize = 6, linewidth = None, framealpha = 0, loc = "best", fontweight = "bold",
+                 columnspacing = 0, linestyle = None, lw = None, ls = None, **kwargs):
+    """
+    Creates Custom colored legend
+    Parameters
+    **kwargs: Additional keyword arguents to be passed to pyplot.legend()
+    
+    Returns a legend object
+    """
+    
+    if len(labels) != len(colors):
+        raise RuntimeError("Number of Labels should match number of Colors.") 
+        
+    if lw == None and linewidth == None:
+        linewidth = 4
+    elif lw != None and linewidth == None:
+        linewidth = lw
+        
+    if ls == None and linestyle == None:
+        linestyle = "-"
+    elif ls != None and linestyle == None:
+        linestyle = ls
+        
+        
+    custom_lines = []
+    if linestyle == None:
+        for color in colors:
+            custom_lines.append(Line2D([0], [0], color=color, lw=linewidth, ls = "-"))
+            
+    elif type(linestyle) == str:
+        for color in colors:
+            custom_lines.append(Line2D([0], [0], color=color, lw=linewidth, ls = linestyle))
+            
+    elif type(linestyle) == list:
+        for i, color in enumerate(colors):
+            custom_lines.append(Line2D([0], [0], color=color, lw=linewidth, ls = linestyle[i]))
+
+    leg = ax.legend(custom_lines, labels, fontsize = fontsize,
+             framealpha = framealpha, loc = loc, ncol = ncol, columnspacing = columnspacing, **kwargs)
+    
+    leg_text = leg.get_texts()
+    for i, text in enumerate(leg_text):
+        text.set_color(colors[i])
+        text.set_weight(fontweight)
+        
+    return leg
+
+def set_axes_color(ax, color = "black", remove_spines = None, **kwargs):
+    '''
+    Change axes color and set background to transparent
+    if remove_spines = True, removes right and top spine
+        -remove_spines can also be a list of spines to remove 
+    '''
+     
+    ax.xaxis.label.set_color(color)
+    ax.yaxis.label.set_color(color)
+    ax.title.set_color(color)
+    ax.patch.set_alpha(0)
+    fig = ax.get_figure()
+    fig.patch.set_alpha(0)
+        
+    ax.tick_params(color = color, which = "both", labelcolor = color)
+    
+    spines = ["left", "right", "top", "bottom"]
+    for spine in spines:
+        ax.spines[spine].set_color(color)
+        
+    if remove_spines == True:
+        ax.spines.right.set_visible(False)
+        ax.spines.top.set_visible(False)
+    elif type(remove_spines) == type(list()):
+        for spine in remove_spines:
+            ax.spines[spine].set_visible(False)
 
 def pairplot(parameter_array, labels, **kwargs):
     """
@@ -130,7 +205,7 @@ def pairplot(parameter_array, labels, **kwargs):
                 ax[row, col].plot([low_end, low_end], [0, interval_height], color = confidence_color, lw = cumulative_lw)
                 ax[row, col].plot([high_end, high_end],[0, interval_height], color = confidence_color, lw = cumulative_lw)
                 #Set Border color
-                set_Axes_Color(ax[row, col], box_color, remove_spines = True)
+                set_axes_color(ax[row, col], box_color, remove_spines = True)
 
                 ax[row, col].set_xlim(min_val, max_val)
             
@@ -148,17 +223,17 @@ def pairplot(parameter_array, labels, **kwargs):
                     
                     if show_significance:
                         if row == col:
-                            Custom_Legend(ax[row, col], [p_string, r'$\mathbf{\rho = }$' + f'{rho:.3f}'], [legend_color, legend_color], linewidth = 0, fontsize = 6,loc = "upper left", handlelength = 0, handletextpad = 0)
+                            legend(ax[row, col], [p_string, r'$\mathbf{\rho = }$' + f'{rho:.3f}'], [legend_color, legend_color], linewidth = 0, fontsize = 6,loc = "upper left", handlelength = 0, handletextpad = 0)
                         else:
-                            Custom_Legend(ax[row, col], [p_string, r'$\mathbf{\rho = }$' + f'{rho:.3f}'], [legend_color, legend_color], linewidth = 0, fontsize = 6,loc = 0, handlelength = 0, handletextpad = -0)
+                            legend(ax[row, col], [p_string, r'$\mathbf{\rho = }$' + f'{rho:.3f}'], [legend_color, legend_color], linewidth = 0, fontsize = 6,loc = 0, handlelength = 0, handletextpad = -0)
 
-                    set_Axes_Color(ax[row, col], box_color, remove_spines = True)
+                    set_axes_color(ax[row, col], box_color, remove_spines = True)
               #If not significant, grey out the dots
                 else:
                     ax[row, col].scatter(parameter_array[:, col], parameter_array[:, row], s = 1, lw = 0, color = dot_color, alpha = dot_alpha)
                     ax[row, col].set_xlim(min_val, max_val)
 
-                    set_Axes_Color(ax[row, col], box_color, remove_spines = True)
+                    set_axes_color(ax[row, col], box_color, remove_spines = True)
 
                 xlims = ax[row, col].get_xlim()
                 ylims = ax[row, col].get_ylim()
