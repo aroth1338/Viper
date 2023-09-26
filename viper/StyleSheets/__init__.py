@@ -1,1 +1,0 @@
-viper_style = "viper/StyleSheets/viper_style.mplstyle"
