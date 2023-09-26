@@ -5,11 +5,12 @@ import viper.icons
 import viper.plot_annotations
 import viper.main_plotting
 from viper.StyleSheets import viper_style
-import pathlib
+import os
 
 import matplotlib as mpl
 
 mpl.rcParams["axes.facecolor"]   = "none"
 mpl.rcParams["figure.facecolor"] = "none"
 
-viper_stylesheet = str(pathlib.Path("StyleSheets/viper_style.mplstyle").absolute())
+head, tail = os.path.split(os.path.dirname(os.path.abspath(__file__)))
+viper_stylesheet = os.path.join(head, "StyleSheets", "viper_style.mplstyle")
