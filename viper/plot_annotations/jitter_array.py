@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def jitterdata(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
+def jitter_array(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
     """
     Plots individual connecting data with a gaussian jitter. 
     noise_scale sets the magnitude of the jitter
@@ -13,9 +13,9 @@ def jitterdata(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
     noise_scale: spread of normal distribution to generate noise
     
     Optional Arguments:
-    circle_size  = kwargs.get("circle_size", 8)
-    circle_alpha = kwargs.get("circle_alpha", 1)
-    circle_lw    = kwargs.get("circle_lw", 0.5)
+    data_size  = kwargs.get("data_size", 8)
+    data_alpha = kwargs.get("data_alpha", 1)
+    data_lw    = kwargs.get("data_lw", 0.5)
 
     include_mean = kwargs.get("include_mean", True)
     
@@ -30,16 +30,22 @@ def jitterdata(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
     mean_edge_color = kwargs.get("mean_edge_color", "#727273")
     mean_zorder = kwargs.get("mean_zorder", 0)
     """
-    circle_size  = kwargs.get("circle_size", 8)
-    circle_alpha = kwargs.get("circle_alpha", 1)
+    data_size  = kwargs.get("data_size", 8)
+    data_alpha = kwargs.get("data_alpha", 1)
+
+    mean_size  = kwargs.get("mean_size", 8)
+    mean_alpha = kwargs.get("mean_alpha", 1)
+
     include_mean = kwargs.get("include_mean", True)
     linewidth    = kwargs.get("linewidth", None) #same as lw
     lw           = kwargs.get("lw", None)        #same as linewidth
+
     data_color   = kwargs.get("data_color", "grey")
     data_edge_color = kwargs.get("data_edge_color", "grey")
+
     mean_color   = kwargs.get("mean_color", '#727273')
     mean_edge_color = kwargs.get("mean_edge_color", "#727273")
-    circle_lw    = kwargs.get("circle_lw", 0.5)
+    data_lw    = kwargs.get("data_lw", 0.5)
     mean_zorder = kwargs.get("mean_zorder", 0)
     data_zorder = kwargs.get("data_zorder", 0)
     
@@ -61,17 +67,17 @@ def jitterdata(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
         #get first row of data
         data = [x[i] for x in data_list]
         ax.plot(x_positions + noise, data,
-                 lw = lw, c = data_edge_color, alpha = circle_alpha, zorder = data_zorder-1, clip_on = False)
+                 lw = lw, c = data_edge_color, alpha = data_alpha, zorder = data_zorder-1, clip_on = False)
 
         ax.scatter(x_positions + noise, data,
-                    s = circle_size, facecolors = 'none',
-                   edgecolors=data_color, alpha = circle_alpha, lw = circle_lw, zorder = data_zorder, clip_on = False)
+                    s = data_size, facecolors = 'none',
+                   edgecolors=data_color, alpha = data_alpha, lw = data_lw, zorder = data_zorder, clip_on = False)
         
     #Plot mean datapoints
     if include_mean:
         ax.plot(x_positions, [np.nanmean(array) for array in data_list],
-                     lw = 2*lw, c = mean_edge_color, alpha = 1, zorder = mean_zorder, clip_on = False)
+                     lw = 2*lw, c = mean_edge_color, alpha = mean_alpha, zorder = mean_zorder, clip_on = False)
 
         ax.scatter(x_positions, [np.nanmean(array) for array in data_list],
-                    s = circle_size, facecolors = mean_color,
-                   edgecolors=mean_color, alpha = 1, lw = circle_lw, zorder = mean_zorder, clip_on = False)
+                    s = mean_size, facecolors = mean_color,
+                   edgecolors = mean_color, alpha = mean_alpha, lw = data_lw, zorder = mean_zorder, clip_on = False)
