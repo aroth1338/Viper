@@ -12,4 +12,4 @@ import matplotlib as mpl
 mpl.rcParams["axes.facecolor"]   = "none"
 mpl.rcParams["figure.facecolor"] = "none"
 
-viper_stylesheet = pathlib.Path("StyleSheets/viper_style.mplstyle").resolve()
+viper_stylesheet = str(pathlib.Path("StyleSheets/viper_style.mplstyle").absolute())
