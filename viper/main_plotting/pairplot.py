@@ -1,5 +1,5 @@
-from viperviz import legend
-from viperviz import set_axes_color
+from viper import legend
+from viper import set_axes_color
 from scipy.stats import spearmanr
 import matplotlib.pyplot as plt
 import numpy as np
