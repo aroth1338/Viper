@@ -13,4 +13,4 @@ mpl.rcParams["axes.facecolor"]   = "none"
 mpl.rcParams["figure.facecolor"] = "none"
 
 head, tail = os.path.split(os.path.dirname(os.path.abspath(__file__)))
-viper_stylesheet = os.path.join(head, "StyleSheets", "viper_style.mplstyle")
+viper_stylesheet = os.path.join(head, "viper", "StyleSheets", "viper_style.mplstyle")
