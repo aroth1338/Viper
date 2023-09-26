@@ -1,2 +1,3 @@
 include viper/images/*
 include viper/ColorWheel/color_list.txt
+include viper/StyleSheets/*
