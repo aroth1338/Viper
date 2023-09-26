@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def jitter_array(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
+def jitterdata(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
     """
     Plots individual connecting data with a gaussian jitter. 
     noise_scale sets the magnitude of the jitter
@@ -51,9 +51,9 @@ def jitter_array(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
     x_positions = np.array(x_positions)
     
     #plot individual datapoints
-    if np.ndim(data_list) == 1: #HALP
+    if isinstance(data_list, list): 
         data_length = len(data_list)
-    else:
+    else: #2D array
         data_length = len(data_list[0])
     for i in range(data_length):
         noise = np.random.normal(0, noise_scale)
