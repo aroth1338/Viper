@@ -1,2 +1,3 @@
 *.pyc
 viper/ColorWheel/ColorWheel_test.ipynb
+import_test.ipynb
