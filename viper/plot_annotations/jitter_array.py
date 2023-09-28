@@ -55,6 +55,10 @@ def jitter_array(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
         lw = linewidth
         
     x_positions = np.array(x_positions)
+
+    #############
+    #TODO calculate data radius and plot from edges of data circles
+    #############
     
     #plot individual datapoints
     if isinstance(data_list, list): 

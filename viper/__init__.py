@@ -1,9 +1,9 @@
 __version__ = "0.1.0"
 
 from viper.ColorWheel import ColorWheel
-import viper.icons
-import viper.plot_annotations
-import viper.main_plotting
+from viper.icons import *
+from viper.plot_annotations import *
+from viper.main_plotting import *
 import os
 
 import matplotlib as mpl
