@@ -54,8 +54,8 @@ axes.spines.bottom: True
 axes.spines.top:    False
 axes.spines.right:  False
 ### Ticks
-xtick.labelsize: 8.5
-ytick.labelsize: 8.5
+xtick.labelsize: 9
+ytick.labelsize: 9
 
 ### Figures
 figure.dpi: 150
@@ -64,5 +64,5 @@ figure.titleweight: bold
 
 ### Savefig parameters
 savefig.dpi: 300
-savefig.transparent: True
+savefig.transparent: False
 savefig.format: png
