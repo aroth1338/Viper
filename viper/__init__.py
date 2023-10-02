@@ -4,6 +4,7 @@ from viper.ColorWheel import ColorWheel
 from viper.icons import *
 from viper.plot_annotations import *
 from viper.main_plotting import *
+import viper.stylesheets
 import os
 
 import matplotlib as mpl
