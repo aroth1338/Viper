@@ -32,9 +32,9 @@ def stat_annotation(ax, x1, x2, y, p = None, d = None, theta = None, theta_first
          
     ylim = ax.get_ylim()         
     color = kwargs.get("color", "grey")
-    h = kwargs.get("h", 0.005*(ylim[1] - ylim[0]))
+    h = kwargs.get("h", 0.0075*(ylim[1] - ylim[0]))
     lw = kwargs.get("lw", .7)
-    fontsize = kwargs.get("fontsize", 6)
+    fontsize = kwargs.get("fontsize", 7)
     exact_p = kwargs.get("exact_p", False)
     indicator_length = kwargs.get("indicator_length", 0)
     stacked = kwargs.get("stacked", False)

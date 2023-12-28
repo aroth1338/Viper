@@ -23,11 +23,11 @@ def jitter_array(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
     lw           = kwargs.get("lw", None)        #same as linewidth
     
     data_color   = kwargs.get("data_color", "grey")
-    data_edge_color = kwargs.get("data_edge_color", "grey")
+    data_edge_color = kwargs.get("data_line_color", "grey")
     data_zorder = kwargs.get("data_zorder", 0)
 
     mean_color   = kwargs.get("mean_color", '#727273')
-    mean_edge_color = kwargs.get("mean_edge_color", "#727273")
+    mean_edge_color = kwargs.get("mean_line_color", "#727273")
     mean_zorder = kwargs.get("mean_zorder", 0)
     """
     data_size  = kwargs.get("data_size", 8)
@@ -41,10 +41,10 @@ def jitter_array(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
     lw           = kwargs.get("lw", None)        #same as linewidth
 
     data_color   = kwargs.get("data_color", "grey")
-    data_edge_color = kwargs.get("data_edge_color", "grey")
+    data_line_color = kwargs.get("data_line_color", "grey")
 
     mean_color   = kwargs.get("mean_color", '#727273')
-    mean_edge_color = kwargs.get("mean_edge_color", "#727273")
+    mean_line_color = kwargs.get("mean_line_color", "#727273")
     data_lw    = kwargs.get("data_lw", 0.5)
     mean_zorder = kwargs.get("mean_zorder", 0)
     data_zorder = kwargs.get("data_zorder", 0)
@@ -55,10 +55,6 @@ def jitter_array(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
         lw = linewidth
         
     x_positions = np.array(x_positions)
-
-    #############
-    #TODO calculate data radius and plot from edges of data circles
-    #############
     
     #plot individual datapoints
     if isinstance(data_list, list): 
@@ -71,7 +67,7 @@ def jitter_array(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
         #get first row of data
         data = [x[i] for x in data_list]
         ax.plot(x_positions + noise, data,
-                 lw = lw, c = data_edge_color, alpha = data_alpha, zorder = data_zorder-1, clip_on = False)
+                 lw = lw, c = data_line_color, alpha = data_alpha, zorder = data_zorder-1, clip_on = False)
 
         ax.scatter(x_positions + noise, data,
                     s = data_size, facecolors = 'none',
@@ -80,7 +76,7 @@ def jitter_array(ax, x_positions, data_list, noise_scale = 0.05, **kwargs):
     #Plot mean datapoints
     if include_mean:
         ax.plot(x_positions, [np.nanmean(array) for array in data_list],
-                     lw = 2*lw, c = mean_edge_color, alpha = mean_alpha, zorder = mean_zorder, clip_on = False)
+                     lw = 2*lw, c = mean_line_color, alpha = mean_alpha, zorder = mean_zorder, clip_on = False)
 
         ax.scatter(x_positions, [np.nanmean(array) for array in data_list],
                     s = mean_size, facecolors = mean_color,

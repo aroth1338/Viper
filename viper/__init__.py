@@ -1,4 +1,4 @@
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from viper.ColorWheel import ColorWheel
 from viper.icons import *
@@ -9,9 +9,10 @@ import os
 
 import matplotlib as mpl
 
-mpl.rcParams["axes.facecolor"]   = "none"
-mpl.rcParams["figure.facecolor"] = "none"
+# mpl.rcParams["axes.facecolor"]   = "none"
+# mpl.rcParams["figure.facecolor"] = "none"
 
-head, tail = os.path.split(os.path.dirname(os.path.abspath(__file__)))
-viper_dark = os.path.join(head, "viper", "StyleSheets", "viper_dark.mplstyle")
-viper_light = os.path.join(head, "viper", "StyleSheets", "viper_light.mplstyle")
+#set up stylesheets
+# head, tail = os.path.split(os.path.dirname(os.path.abspath(__file__)))
+# viper_dark = os.path.join(head, "viper", "stylesheets", "viper_dark.mplstyle")
+# viper_light = os.path.join(head, "viper", "stylesheets", "viper_light.mplstyle")

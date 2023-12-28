@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
 def legend(ax, labels, colors, ncol = 1,
-                 fontsize = 6, linewidth = None, framealpha = 0, loc = "best", fontweight = "bold",
-                 columnspacing = 0, linestyle = None, lw = None, ls = None, **kwargs):
+                 fontsize = 7, linewidth = None, framealpha = 0, loc = "best", fontweight = "bold",
+                 columnspacing = 0, linestyle = None, lw = None, ls = None,
+                bbox_to_anchor = (0,0,1,1), handlelength = 0.5, **kwargs):
     """
-    Creates Custom colored legend
+    Creates custom colored legend
     Parameters
     **kwargs: Additional keyword arguents to be passed to pyplot.legend()
     
@@ -40,8 +41,9 @@ def legend(ax, labels, colors, ncol = 1,
         for i, color in enumerate(colors):
             custom_lines.append(Line2D([0], [0], color=color, lw=linewidth, ls = linestyle[i]))
 
-    leg = ax.legend(custom_lines, labels, fontsize = fontsize,
-             framealpha = framealpha, loc = loc, ncol = ncol, columnspacing = columnspacing, **kwargs)
+    leg = ax.legend(custom_lines, labels, fontsize = fontsize, bbox_to_anchor = bbox_to_anchor,
+             framealpha = framealpha, loc = loc, ncol = ncol, columnspacing = columnspacing,
+             handlelength = handlelength, **kwargs)
     
     leg_text = leg.get_texts()
     for i, text in enumerate(leg_text):

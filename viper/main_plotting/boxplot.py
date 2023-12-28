@@ -72,6 +72,7 @@ def boxplot(ax, x, data, jitter_data = False, clip_on = False, **kwargs):
         
     data = np.array(data)
     filtered_data = data[~np.isnan(data)]
+    
     #Make Box
     bp = ax.boxplot([filtered_data],   positions = [x], patch_artist = True,  showfliers = False, 
                 boxprops = box_props  , whiskerprops = whisker_props,

@@ -39,11 +39,11 @@ axes.facecolor: black
 axes.edgecolor: white
 axes.linewidth: 1.
 axes.grid: False
-axes.titlesize: 12.0
+axes.titlesize: 10.0
 axes.titleweight: bold
 axes.titlecolor: white
 axes.titlepad: 6.0
-axes.labelsize: 12.0
+axes.labelsize: 10.0
 axes.labelweight: bold
 
 axes.labelcolor: white
@@ -59,7 +59,7 @@ ytick.labelsize: 9
 
 ### Figures
 figure.dpi: 150
-figure.titlesize: 12
+figure.titlesize: 10
 figure.titleweight: bold
 
 ### Savefig parameters
