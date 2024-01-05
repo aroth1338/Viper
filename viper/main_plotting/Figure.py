@@ -45,6 +45,7 @@ class Figure:
     def add_panel(self, dim):
         panel = self.axmain.inset_axes(dim, transform = self.axmain.transData)
         self.panels.append(panel)
+        plt.sca(panel)
         
         return panel
     
