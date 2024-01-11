@@ -57,7 +57,7 @@ class Color():
         Input: rgb tuple, ex: (.2, .8, .2) or (40, 185, 40)
         Output: Hex Representation of color
         """
-        if rgb[0] < 1:
+        if rgb[0] < 1 or rgb[1] < 1 or rgb[2] < 1:
             int_rgb = (rgb[0] * 255, rgb[1] * 255, rgb[2] * 255)
             int_rgb = [int(x) for x in int_rgb]
             int_rgb = tuple(int_rgb)
