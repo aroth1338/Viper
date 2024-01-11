@@ -74,7 +74,7 @@ class ColorWheel(_colorwheeldotdict):
         return "none"
     
     @property
-    def bold(self):
+    def bold(self): #handy for plotting
         return "bold"
     
     def get_name(self, hexcode):
@@ -119,8 +119,10 @@ class ColorWheel(_colorwheeldotdict):
         if False in bool_test:
             int_rgb = (rgb[0] * 255, rgb[1] * 255, rgb[2] * 255)
             int_rgb = [int(x) for x in int_rgb]
+            int_rgb = tuple(int_rgb)
         else:
             int_rgb = [int(x) for x in rgb]
+            int_rgb = tuple(int_rgb)
             
         
         return '#%02x%02x%02x' % tuple(int_rgb)

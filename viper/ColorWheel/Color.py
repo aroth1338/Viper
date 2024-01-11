@@ -61,9 +61,10 @@ class Color():
             int_rgb = (rgb[0] * 255, rgb[1] * 255, rgb[2] * 255)
             int_rgb = [int(x) for x in int_rgb]
             int_rgb = tuple(int_rgb)
-        else:
-            int_rgb = rgb
-            
+        else: #really make sure they are ints
+            int_rgb = [int(x) for x in int_rgb]
+            int_rgb = tuple(int_rgb)
+
         return '#%02x%02x%02x' % int_rgb
     
     def __blend(self, color1, color2, ratio = .5):
