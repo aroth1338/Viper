@@ -1,13 +1,13 @@
-import matplotlib.colors as mc
-import colorsys
 import matplotlib.pyplot as plt        
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 import importlib
 from functools import cached_property
 import os
+import warnings
 
 Color = importlib.import_module(".Color", "viper.ColorWheel").Color
+Palette = importlib.import_module(".Palette", "viper.ColorWheel").Palette 
 
 head, tail = os.path.split(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,7 +24,7 @@ class _colorwheeldotdict(dict):
             if key not in self.colors_used: self.colors_used.append(key)
             return self[f"{key}"]
     
-class ColorWheel(_colorwheeldotdict):
+class ColorWheel(Palette):
     """
     ColorWheel object to store common colors used by the CashabackLab
     Can Access colors as a dictionary key or as a class attribute
@@ -35,7 +35,8 @@ class ColorWheel(_colorwheeldotdict):
         For any attributes that are not hex code colors, create a function with the @property decorator
         For Examples see color_list
         """
-
+        self.color_list = []
+        self.color_list_hex = []
         with open(os.path.join(head, "ColorWheel", "color_list.txt"), "r") as file:
             for line in file.readlines():
                 clean = line.strip()
@@ -43,31 +44,26 @@ class ColorWheel(_colorwheeldotdict):
 
                 #Not a line break or a comment
                 if var_name[0] !=  "" and var_name[0][0] != "#":
-                    self[var_name[0].strip()] = var_name[1].strip()
+                    self.__setattr__(var_name[0].strip(), var_name[1].strip())
+                    self.color_list.append(var_name[0].strip())
+                    self.color_list_hex.append(var_name[1].strip())
+                    # self[var_name[0].strip()] = var_name[1].strip()
 
     @cached_property
     def object_list(self):
         tmp_object = _colorwheeldotdict()
 
-        for key in self.keys():
+        for key in self.color_list:
             tmp_object[key] = Color(self[key])
         return tmp_object
 
     @property
     def num_colors(self):
         return len(self.color_list)
-    
-    @property
-    def color_list(self):
-        return [x for x in self.keys()]
-    
-    @property
-    def color_list_hex(self):
-        return [self[x] for x in self.keys()]
-    
+
     @property
     def random_color(self):
-        return np.random.choice(list(self.values()), size = 1, replace = False)
+        return np.random.choice(self.color_list_hex, size = 1, replace = False)
         
     @property
     def none(self):
@@ -78,19 +74,19 @@ class ColorWheel(_colorwheeldotdict):
         return "bold"
     
     def get_name(self, hexcode):
-        for name, hex in zip(self.keys(), self.values()):
+        for name, hex in zip(self.color_list, self.color_list_hex):
             if hexcode == hex:
                 return name
         return None
 
     def get_random_color(self, n = 1):
-        return np.random.choice(list(self.values()), size = n, replace = False)
+        return np.random.choice(self.color_list_hex, size = n, replace = False)
     
     def in_wheel(self, inp):
         """
         Returns True if input is in the color wheel.
         """
-        if inp in self.keys() or inp in self.values():
+        if inp in self.color_list or inp in self.color_list_hex:
             return True
         
         return False
@@ -100,33 +96,17 @@ class ColorWheel(_colorwheeldotdict):
         Input: Hex String
         Output: integer RGB values
         """
-        hex_code = hex_code.lstrip("#")
-        RGB_vals = tuple(int(hex_code[i:i+2], 16) for i in (0, 2, 4))
+        return self._hex_to_rgb(hex_code, normalize = normalize)
         
-        if normalize: 
-            RGB_vals = (RGB_vals[0] / 255, RGB_vals[1] / 255, RGB_vals[2] / 255)
         
-        return RGB_vals
-    
     def rgb_to_hex(self, rgb):
         """
         Input: rgb tuple, ex: (.2, .8, .2) or (40, 185, 40)
         Output: Hex Representation of color
         """
-        bool_test = [type(x) == int for x in rgb]
-        rgb = [max(x, 0) for x in rgb]
-        
-        if False in bool_test:
-            int_rgb = (rgb[0] * 255, rgb[1] * 255, rgb[2] * 255)
-            int_rgb = [int(x) for x in int_rgb]
-            int_rgb = tuple(int_rgb)
-        else:
-            int_rgb = [int(x) for x in rgb]
-            int_rgb = tuple(int_rgb)
-            
-        
-        return '#%02x%02x%02x' % tuple(int_rgb)
+        return self._rgb_to_hex(rgb)
     
+    #set for deprecation in future release
     def lighten_color(self, color, amount = 1, return_rgb = False):
         """
         Lightens the given color by multiplying (1-luminosity) by the given amount.
@@ -144,30 +124,34 @@ class ColorWheel(_colorwheeldotdict):
         >> lighten_color('#F034A3', amount = 0.6)
         >> lighten_color((.3,.55,.1), amount = 0.5)
         """
+        warnings.warn("'lighten_color' set for deprecation. Please use 'adjust_luminance'", DeprecationWarning, stacklevel=2)
+        self._adjust_luminance(color, amount = amount, return_rgb = return_rgb)
 
-        c = colorsys.rgb_to_hls(*mc.to_rgb(color))
-        rgb = colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
+    def adjust_luminance(self, color, amount = 1, return_rgb = False):
+        """
+        Lightens the given color by multiplying (1-luminosity) by the given amount.
+        Input can be matplotlib color string, hex string, or RGB tuple.
         
-        if return_rgb:
-            return rgb
-        else:
-            return self.rgb_to_hex(rgb)
+        amount must be between 0 and 2
+        amount = 1 returns the same color
+        amount > 1 returns darker shade
+        amount < 1 returns lighter shade
+        
+        Default return is Hex Code, set return_rgb = True for rgb tuple
+        
+        Examples:
+        >> lighten_color('g', amount = 0.3)
+        >> lighten_color('#F034A3', amount = 0.6)
+        >> lighten_color((.3,.55,.1), amount = 0.5)
+        """
+        self._adjust_luminance(color, amount = amount, return_rgb = return_rgb)
         
     def blend(self, color1, color2, ratio = .5, demo = False):
         """
         Blends to given colors. Input must be hex code
         Returns blended color in hex code
         """
-        colorRGBA1 = self.hex_to_rgb(color1)
-        colorRGBA2 = self.hex_to_rgb(color2)
-        
-        amount = int(255 * ratio)
-        
-        red   = (colorRGBA1[0] * (255 - amount) + colorRGBA2[0] * amount) / 255
-        green = (colorRGBA1[1] * (255 - amount) + colorRGBA2[1] * amount) / 255
-        blue  = (colorRGBA1[2] * (255 - amount) + colorRGBA2[2] * amount) / 255
-        
-        result = self.rgb_to_hex((int(red), int(green), int(blue)))
+        result = self._blend(color1, color2, ratio = .5)
 
         if demo:
             color_list = [color1, result, color2]
@@ -205,6 +189,7 @@ class ColorWheel(_colorwheeldotdict):
         else:
             return self.__demo_colors_spyder(background = background, selection = selection, fontname = fontname)
 
+    #TODO Expand search to lighter and darker shades using object list?
     def find_contrast_color(self, og_color, n = 1, hue_weight = 1, sat_weight = 1, lum_weight = 1, avoid = [], demo = False):
         """
         Find the top n contrasting colors in the color wheel.
@@ -216,14 +201,16 @@ class ColorWheel(_colorwheeldotdict):
         Returns:
             list of top n contrasting colors
         """
-        curr_hls = colorsys.rgb_to_hls(*mc.to_rgb(og_color))
+        if not self._is_hex(og_color):
+            raise ValueError("Color input must be hexadecimal.")
+        curr_hls = self._hex_to_hls(og_color)
 
         contrast_array = []
-        for color in self.keys():
+        for color in self.color_list:
             if color in ["white", "black", "dark_grey", "light_grey", "grey"] or self[color] in avoid:
                 continue
             else:
-                new_hls = colorsys.rgb_to_hls(*mc.to_rgb(self[color]))
+                new_hls = self._hex_to_hls(self[color])
 
                 hue_diff = (abs(curr_hls[0] - new_hls[0]))*(hue_weight)
                 lum_diff = (abs(curr_hls[1] - new_hls[1]))*(lum_weight)
@@ -265,9 +252,9 @@ class ColorWheel(_colorwheeldotdict):
             raise ValueError(f"Invalid Color Input: {color}. Input must be hex code or a color name in the color wheel.")
             
         if allow_darker:
-            luminance_list = [self.lighten_color(hex_color, amount = (x+1)/int(n/2+1)) for x in range(n) ]
+            luminance_list = [self.adjust_luminance(hex_color, amount = (x+1)/int(n/2+1)) for x in range(n) ]
         else:
-            luminance_list = [self.lighten_color(hex_color, amount = (x+1)/int(n+1)) for x in range(n) ]
+            luminance_list = [self.adjust_luminance(hex_color, amount = (x+1)/int(n+1)) for x in range(n) ]
         if demo:
             x = luminance_list
             plt.figure(dpi = 300, figsize = (3,3))
@@ -315,12 +302,6 @@ class ColorWheel(_colorwheeldotdict):
             plt.imshow(mat, cmap=cm)
 
         return cm
-    
-    def _get_hsv(self, hexrgb):
-        hexrgb = hexrgb[1]
-        hexrgb = hexrgb.lstrip("#")   
-        r, g, b = (int(hexrgb[i:i+2], 16) / 255.0 for i in range(0,5,2))
-        return colorsys.rgb_to_hsv(r, g, b)
 
     def __demo_colors_notebook(self, background = "white", selection = "all", fontname = "Dejavu Sans"):
         """
@@ -331,9 +312,7 @@ class ColorWheel(_colorwheeldotdict):
         print(type(selection))
         
         if selection == "all":
-            color_keys = self.keys()
-        elif selection == "selection" or selection == "selected" or selection == "used":
-            color_keys = self.colors_used
+            color_keys = self.color_list
             
         elif isinstance(selection, list) and len(selection) > 0:
             if selection[0][0] == "#": #hex codes, need names
@@ -348,7 +327,7 @@ class ColorWheel(_colorwheeldotdict):
         
         #attempt to sort colors by hue
         color_list = [(x, self[x]) for x in color_keys]
-        color_list.sort(key=self._get_hsv)
+        color_list.sort(key=super()._hex_to_hsv)
 
         fig = plt.figure(dpi = 150, figsize = (4, max(3, 7/28 * num_colors)))
         ax = plt.gca()
@@ -387,9 +366,7 @@ class ColorWheel(_colorwheeldotdict):
         Returns axis object
         """
         if selection == "all":
-            color_keys = self.keys()
-        elif selection == "selection" or selection == "selected" or selection == "used":
-            color_keys = self.colors_used
+            color_keys = self.color_list
             
         elif type(selection) == type(list):
             color_keys = selection
@@ -401,7 +378,7 @@ class ColorWheel(_colorwheeldotdict):
         
         #attempt to sort colors by hue
         color_list = [(x, self[x]) for x in color_keys]
-        color_list.sort(key=self._get_hsv)
+        color_list.sort(key=super()._hex_to_hsv)
 
         iter_color_list = iter(color_list)
         if self.num_colors % 10 == 0:
@@ -448,7 +425,7 @@ class ColorWheel(_colorwheeldotdict):
         return ax
     
     def _get_name(self, hexcode):
-        for x in self.keys():
+        for x in self.color_list:
             if hexcode == self[x]:
                 return x
             
@@ -456,11 +433,8 @@ class ColorWheel(_colorwheeldotdict):
         self.demo_colors()
         return ""
     
-    def _get_hsv(self, hexrgb):
-        if isinstance(hexrgb, tuple): hexrgb = hexrgb[1]
-        hexrgb = hexrgb.lstrip("#")   
-        r, g, b = (int(hexrgb[i:i+2], 16) / 255.0 for i in range(0,5,2))
-        return colorsys.rgb_to_hsv(r, g, b)
+    def __getitem__(self, key):
+        return self.__dict__[key]
 
     @property
     def __isnotebook(self):
