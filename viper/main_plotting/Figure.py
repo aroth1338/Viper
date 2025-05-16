@@ -1,6 +1,6 @@
 from string import ascii_uppercase
 import matplotlib.pyplot as plt
-import matplotlib as mpl
+from matplotlib.axes import Axes
 
 class Figure:
     """
@@ -57,13 +57,22 @@ class Figure:
         self.panels  = [] #panels for figure
         
     def remove_figure_borders(self):
+        """
+        Method to remove the window pane-like frame around the figure.
+        """
         self.axmain.axis("off")
         
     def remove_panel_borders(self):
+        """
+        Method to remove borders around all panels within the Figure.
+        """
         for panel in self.panels:
-            panel.axis("off")
+            panel.spines.set_visible(False)
         
     def add_letter(self, x, y, letter = None, fontsize = 9, ha = "left", va = "top", color = None, zorder = 20):
+        """
+        Method to add a letter to the Figure, usefull for marking individual panels.
+        """
         if letter == None:
             letter_to_add = ascii_uppercase[len(self.letters)]
         else:
@@ -80,13 +89,26 @@ class Figure:
         else:
             self.axmain.text(x, y, letter_to_add, ha = ha, va = va, fontweight = "bold", color = color, fontsize = fontsize, zorder = zorder)
         
-    def add_panel(self, dim = None):
+    def add_panel(self, dim = None, style = None):
+        """
+        Method to add an individual panel to the Figure. The resulting axis is set as the current mpl axis.
+
+        Input
+            dim: list[float], default is [0.5, 0.3, 5.8, 2.3]. A list containing the dimensions of the panel in inches. 
+                Ordering is [x, y, width, height]
+
+        Output
+            matplotlib.Axis object 
+        """
 
         if dim is None:
             dim = [0.5, 0.3, 5.8, 2.3]
 
-        if self.style is not None:
+        if self.style is not None and style is None:
             with plt.style.context(self.style):
+                panel = self.axmain.inset_axes(dim, transform = self.axmain.transData)
+        elif style is not None:
+            with plt.style.context(style):
                 panel = self.axmain.inset_axes(dim, transform = self.axmain.transData)
         else:
             panel = self.axmain.inset_axes(dim, transform = self.axmain.transData)
@@ -98,18 +120,28 @@ class Figure:
         return panel
     
     def highlight_panel(self, panel, color = "red"):
+        """
+        Method to highlight an individual panel by coloring its axis.
+
+        Input
+            panel: mpl.Axis, the panel to color.
+            color: str, default is 'red'. The color of the highlight.
+        """
         if isinstance(panel, int):
             for spine in self.panels[panel].spines:
                 self.panels[panel].spines[spine].set_color(color)
                 self.panels[panel].spines[spine].set_visible(True)
                 
-        elif isinstance(panel, mpl.axes.Axes):
+        elif isinstance(panel, Axes):
             panel.axis("on")
             for spine in panel.spines:
                 panel.spines[spine].set_color(color)
                 panel.spines[spine].set_visible(True)
                 
     def make_transparent(self):
+        """
+        Method to set the transparency of the Figure and all of its panels to 0.
+        """
         self.figure.patch.set_alpha(0)
         self.axmain.patch.set_alpha(0)
 
@@ -117,6 +149,15 @@ class Figure:
             ax.patch.set_alpha(0)
 
     def savefig(self, path, dpi = 300, transparent = False, **kwargs):
+        """
+        Method to safe the figure in a desired format. 
+
+        Input
+            path: str or path-like object, The file path to save the Figure.
+            dpi: int, default is 300. The dpi of the image.
+            transparent: bool, default is False. Option to turn the figure transparent.
+            kwargs: optional arguments passed to plt.savefig()
+        """
         self.remove_figure_borders()
         if transparent:
             self.make_transparent()
