@@ -1,0 +1,16 @@
+from .ColorWheel import ColorWheel
+from .icons import *
+from .plot_annotations import *
+from .main_plotting import *
+from .stylesheets import viper_dark, viper_light
+
+__version__ = "0.1.0"
+
+__all__ = [
+    "ColorWheel",
+    "viper_dark",
+    "viper_light"
+]
+
+def main() -> None:
+    print("Hello from viper!")
