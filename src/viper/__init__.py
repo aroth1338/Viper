@@ -1,5 +1,5 @@
 from .ColorWheel import ColorWheel
-from .icons import *
+from .icons.get_icons import healthy, elderly, hand, open_hand, foot, walking, reward, sight, punishment
 from .plot_annotations import *
 from .main_plotting import *
 from .stylesheets import viper_dark, viper_light
