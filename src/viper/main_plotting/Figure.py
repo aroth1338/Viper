@@ -7,16 +7,7 @@ class Figure:
     Custom Figure class for creating multi-panelled figures. Constructor allows for a stylesheet to be 
     passed in, allowing each Figure instance to have its own style.
 
-    Inputs
-        (optional) figsize: tuple(float, float), default is (6.5, 3). The size of the figure in inches (width, height).
-        (optional) dpi: int, default is 150. The dpi of the created figure.
-        (optional) style: str, default is None. The given style sheet for the figure. Accepts mpl.style_sheets or a path to a style sheet
-        (optional) invert: bool, default is True. Invert's the y-axis of the global axis so that the origin is the upper left corner.
-
-    Output
-        Figure class instance.
-
-    ****Note
+    ***Note***
         This class exists to solve a specific problem with saving figures in matplotlib. Figures in 
         matplotlib have an invisible bounding box, like a picture frame. When saving the figure, only
         content within this bounding box is saved. When working in a notebook environment, this bounding box
@@ -24,10 +15,17 @@ class Figure:
         intentionally cut off when saving. with the viper.Figure class, the bounding box is always visible until
         the figure is saved. Thus, the user will always know what plot elements will be saved with the figure. 
     
-    
     """
     def __init__(self, figsize = None, dpi = 150, style = None, invert = True):
-        
+        """
+        Creates a Figure instance.
+     
+        Args:
+            figsize (tuple(float, float), optional): The size of the figure in inches (width, height). Defaults to (6.5, 3).
+            dpi (int, optional): Dpiof the created Figure.. Defaults to 150.
+            style (str, optional): Any acceptable matplotlib.stylesheet name to act as the defuault style for this Figure. Defaults to 'default'.
+            invert (bool, optional): Invert's the y-axis of the global axis so that the origin is the upper left corner. Defaults to True.
+        """
         if figsize is None:
             figsize = (6.5, 3)
 

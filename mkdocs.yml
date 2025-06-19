@@ -1,5 +1,7 @@
 site_name: Viper
 
+theme: material
+
 plugins:
   - search
   - mkdocstrings
