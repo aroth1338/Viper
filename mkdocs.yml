@@ -1,6 +1,7 @@
 site_name: Viper
 
-theme: material
+theme: 
+  name: material
 
 plugins:
   - search
