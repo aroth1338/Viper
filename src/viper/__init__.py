@@ -11,6 +11,3 @@ __all__ = [
     "viper_dark",
     "viper_light"
 ]
-
-def main() -> None:
-    print("Hello from viper!")
