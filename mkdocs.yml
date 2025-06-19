@@ -1,1 +1,6 @@
 site_name: Viper
+
+plugins:
+  - search
+  - mkdocstrings
+      
