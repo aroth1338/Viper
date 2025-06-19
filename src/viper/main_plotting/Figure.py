@@ -70,8 +70,18 @@ class Figure:
             panel.spines.set_visible(False)
         
     def add_letter(self, x, y, letter = None, fontsize = 9, ha = "left", va = "top", color = None, zorder = 20):
-        """
-        Method to add a letter to the Figure, usefull for marking individual panels.
+        """       
+        Method to add a letter to the Figure, useful for marking individual panels.
+
+        Args:
+            x (float): x coordinate of the letter in global figure axes coordinates.
+            y (float): y coordinate of the letter in global figure axes coordinates.
+            letter (str, optional): Letter or text to display. Defaults to next letter in the alphabet.
+            fontsize (int, optional): Fontsize of the letter or text string. Defaults to 9.
+            ha (str, optional): Horizontal alignment of the letter or text string. Defaults to "left".
+            va (str, optional): Vertical alignment of the letter or text string. Defaults to "top".
+            color (str, optional): Color of the letter or text string. Defaults to black.
+            zorder (int, optional): Zorder of the letter or text string. Defaults to 20.
         """
         if letter == None:
             letter_to_add = ascii_uppercase[len(self.letters)]
@@ -93,16 +103,17 @@ class Figure:
         """
         Method to add an individual panel to the Figure. The resulting axis is set as the current mpl axis.
 
-        Input
-            dim: list[float], default is [0.5, 0.3, 5.8, 2.3]. A list containing the dimensions of the panel in inches. 
-                Ordering is [x, y, width, height]
+        Args:
+            dim (list[float], optional): A list containing the position and dimensions of the panel in inches. Defaults to [0.5, 0.3, 5.8, 2.3].
+                >>> Ordering is [x, y, width, height]
+            style (str, optional): A valid matplotlib.stylesheet name for this panel. Defaults to None.
 
-        Output
-            matplotlib.Axis object 
+        Returns:
+            matplotlib.Axis: The axis created by add_panel()
         """
 
         if dim is None:
-            dim = [0.5, 0.3, 5.8, 2.3]
+            dim = [0.5, 0.3, 5.75, 2.3]
 
         if self.style is not None and style is None:
             with plt.style.context(self.style):
@@ -123,9 +134,9 @@ class Figure:
         """
         Method to highlight an individual panel by coloring its axis.
 
-        Input
-            panel: mpl.Axis, the panel to color.
-            color: str, default is 'red'. The color of the highlight.
+        Args:
+            panel (matplotlib.Axis): Panel to color
+            color (str, optional): Color of the highlight. Defaults to "red".
         """
         if isinstance(panel, int):
             for spine in self.panels[panel].spines:
@@ -141,6 +152,7 @@ class Figure:
     def make_transparent(self):
         """
         Method to set the transparency of the Figure and all of its panels to 0.
+
         """
         self.figure.patch.set_alpha(0)
         self.axmain.patch.set_alpha(0)
@@ -152,13 +164,16 @@ class Figure:
         """
         Method to safe the figure in a desired format. 
 
-        Input
-            path: str or path-like object, The file path to save the Figure.
-            dpi: int, default is 300. The dpi of the image.
-            transparent: bool, default is False. Option to turn the figure transparent.
-            kwargs: optional arguments passed to plt.savefig()
+        Args:
+            path (or path-like object): The file path to save the Figure
+            dpi (int, optional): Dpi of the image. Defaults to 300.
+            transparent (bool, optional): Option to turn the figure transparent. Defaults to False.
+            kwargs (optional): Accepts any keyword arguments used by matplotlib.Figure.savefig()
         """
+        
         self.remove_figure_borders()
+
         if transparent:
             self.make_transparent()
+
         self.figure.savefig(path, dpi = dpi, **kwargs)
