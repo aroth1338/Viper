@@ -25,16 +25,19 @@ class _colorwheeldotdict(dict):
             return self[f"{key}"]
     
 class ColorWheel(_colorwheeldotdict):
-    """
-    ColorWheel object to store common colors used by the CashabackLab
-    Can Access colors as a dictionary key or as a class attribute
+    """ColorWheel object for ease of color manipulation. Allows for intuitive shading, blending, and retrieval of colors.
+
     """
     def __init__(self):
         """
-        Only define colors with Hex codes in color_list.txt
-        For any attributes that are not hex code colors, create a function with the @property decorator
-        For Examples see color_list
+        ColorWheel object for ease of color manipulation. Allows for intuitive shading, blending, and retrieval of colors.
         """
+
+        # 
+        # Only define colors with Hex codes in color_list.txt
+        # For any attributes that are not hex code colors, create a function with the @property decorator
+        # For Examples see color_list
+        # 
 
         with open(os.path.join(head, "ColorWheel", "color_list.txt"), "r") as file:
             for line in file.readlines():
@@ -47,6 +50,11 @@ class ColorWheel(_colorwheeldotdict):
 
     @cached_property
     def object_list(self):
+        """Creates a dot access dictionary of colors in the ColorWheel, where every entry is an experimental Color object.
+
+        Returns:
+            dict: Dot access dictionary of Color objects.
+        """
         tmp_object = _colorwheeldotdict()
 
         for key in self.keys():
@@ -59,36 +67,83 @@ class ColorWheel(_colorwheeldotdict):
     
     @property
     def color_list(self):
+        """list of color names in the ColorWheel
+
+        Returns:
+            list[str]: list of color names
+        """
         return [x for x in self.keys()]
     
     @property
     def color_list_hex(self):
+        """list of color hex codes in the ColorWheel
+
+        Returns:
+            list[str]: list of color values
+        """
         return [self[x] for x in self.keys()]
     
     @property
     def random_color(self):
+        """returns a random color value from the ColorWheel
+
+        Returns:
+            str: hex code of color
+        """
         return np.random.choice(list(self.values()), size = 1, replace = False)
         
     @property
     def none(self):
+        """returns the string 'none' for usage with Matplotlib.
+
+        Returns:
+            str: the string 'none'
+        """
         return "none"
     
     @property
     def bold(self): #handy for plotting
+        """returns the string 'bold' for usage with Matplotlib.
+
+        Returns:
+            str: the string 'bold'
+        """
         return "bold"
     
     def get_name(self, hexcode):
+        """Returns the name of a given hex code if it exists in the ColorWheel. 
+        If not in the ColorWheel, returns None
+
+        Args:
+            hexcode (str): The hex code to fetch
+
+        Returns:
+            str or None: The name of the given color or None if not present
+        """
         for name, hex in zip(self.keys(), self.values()):
             if hexcode == hex:
                 return name
         return None
 
     def get_random_color(self, n = 1):
+        """method to get N random colors from the ColorWheel.
+
+        Args:
+            n (int, optional): Number of colors to return. Defaults to 1.
+
+        Returns:
+            list[str]: list of ranodm colors.
+        """
         return np.random.choice(list(self.values()), size = n, replace = False)
     
     def in_wheel(self, inp):
-        """
-        Returns True if input is in the color wheel.
+        """Returns True if input is in the color wheel
+
+        Args:
+            inp (str): Hex code or name of color
+
+        Returns:
+            bool: True if name or color is in the ColroWheel.
         """
         if inp in self.keys() or inp in self.values():
             return True
@@ -96,9 +151,14 @@ class ColorWheel(_colorwheeldotdict):
         return False
     
     def hex_to_rgb(self, hex_code, normalize = False):
-        """
-        Input: Hex String
-        Output: integer RGB values
+        """Convert hex string to rgb values.
+
+        Args:
+            hex_code (str): hex code of color
+            normalize (bool, optional): Option to normalize rgb values to be between 0-1. Defaults to False.
+
+        Returns:
+            tuple: rgb value of color
         """
         hex_code = hex_code.lstrip("#")
         RGB_vals = tuple(int(hex_code[i:i+2], 16) for i in (0, 2, 4))
@@ -109,9 +169,13 @@ class ColorWheel(_colorwheeldotdict):
         return RGB_vals
     
     def rgb_to_hex(self, rgb):
-        """
-        Input: rgb tuple, ex: (.2, .8, .2) or (40, 185, 40)
-        Output: Hex Representation of color
+        """method to convert rgb representation to hex code.
+
+        Args:
+            rgb (tuple): rgb representation of color
+
+        Returns:
+            str: hex code of color
         """
         bool_test = [type(x) == int for x in rgb]
         rgb = [max(x, 0) for x in rgb]
@@ -127,7 +191,7 @@ class ColorWheel(_colorwheeldotdict):
         
         return '#%02x%02x%02x' % tuple(int_rgb)
     
-    def lighten_color(self, color, amount = 1, return_rgb = False):
+    def lighten_color(self, color: str, amount: float = 1, return_rgb: bool = False):
         """
         Lightens the given color by multiplying (1-luminosity) by the given amount.
         Input can be matplotlib color string, hex string, or RGB tuple.
@@ -137,8 +201,14 @@ class ColorWheel(_colorwheeldotdict):
         amount > 1 returns darker shade
         amount < 1 returns lighter shade
         
-        Default return is Hex Code, set return_rgb = True for rgb tuple
-        
+        Args:
+            color (str or tuple): Hex code or RGB tuple of color
+            amount (float, optional): Amount to adjust color shading. Defaults to 1.
+            return_rgb (bool, optional): Option to return result as RGB tuple. Defaults to False.
+
+        Returns:
+            str or tuple: Hex string or RGB tuple of color.
+
         Examples:
         >> lighten_color('g', amount = 0.3)
         >> lighten_color('#F034A3', amount = 0.6)
@@ -154,9 +224,16 @@ class ColorWheel(_colorwheeldotdict):
             return self.rgb_to_hex(rgb)
         
     def blend(self, color1, color2, ratio = .5, demo = False):
-        """
-        Blends to given colors. Input must be hex code
-        Returns blended color in hex code
+        """Blend two given hex strings by a desired ratio. 
+
+        Args:
+            color1 (str): hex code of color
+            color2 (str): hex code of color
+            ratio (float, optional): Ratio of color blend. Less than .5 skews to color1. Greater than .5 skews to color2. Defaults to .5.
+            demo (bool, optional): Option to display a matplotlib demo fo color blend. Defaults to False.
+
+        Returns:
+            str: hex code of color
         """
         colorRGBA1 = self.hex_to_rgb(color1)
         colorRGBA2 = self.hex_to_rgb(color2)
@@ -190,15 +267,17 @@ class ColorWheel(_colorwheeldotdict):
         return result
 
     def demo_colors(self, selection = "all", background = "white", fontname = "Dejavu Sans"):
-        """
-        Shows a plot demo for the available colors.
-        set selection to 
-            "all" for every color
-            "selected", "selection", "used" for all colors accessed by the wheel
-            list of color names or hex codes (can not mix both) for a specific selection of colors
-        Change background to look at colors with different backgrounds
-        set fontname to see different fonts
-        Returns axis object
+        """Shows a plot demo for the available colors.
+
+        Args:
+            selection (str, optional): "all" for every color
+                                       "selected", "selection", "used" for all colors accessed by the wheel
+                                        list of color names or hex codes (can not mix both) for a specific selection of colors. Defaults to "all".
+            background (str, optional): background color for demo. Defaults to "white".
+            fontname (str, optional): font choice for color names. Defaults to "Dejavu Sans".
+
+        Returns:
+            matplotlib.Axis: axis of plot
         """
         if self.__isnotebook:
             return self.__demo_colors_notebook(background = background, selection = selection, fontname = fontname)
@@ -206,15 +285,19 @@ class ColorWheel(_colorwheeldotdict):
             return self.__demo_colors_spyder(background = background, selection = selection, fontname = fontname)
 
     def find_contrast_color(self, og_color, n = 1, hue_weight = 1, sat_weight = 1, lum_weight = 1, avoid = [], demo = False):
-        """
-        Find the top n contrasting colors in the color wheel.
-        Parameters:
-            n: number of colors to return
-            XX_weight: adjust weighting of hue (hue_weight), luminance (lum_weight), or saturation (sat_weight). 
-            avoid: list of ColorWheel colors to avoid using
-            demo: display contrasting colors and their names
+        """Find the top N colors in the ColorWheel that contrast with the given color.
+
+        Args:
+            og_color (str): color to contrast
+            n (int, optional): Number of colors to return. Defaults to 1.
+            hue_weight (int, optional): How heavy to weigh hue contrast. Defaults to 1.
+            sat_weight (int, optional): How heavy to weigh saturation contrast. Defaults to 1.
+            lum_weight (int, optional): How heavy to weigh luminance contrast. Defaults to 1.
+            avoid (list, optional): list of colors in the wheel to avoid. Defaults to [].
+            demo (bool, optional): option to present a matplotlib demo of colors found. Defaults to False.
+
         Returns:
-            list of top n contrasting colors
+            list: list of contrasting colors
         """
         curr_hls = colorsys.rgb_to_hls(*mc.to_rgb(og_color))
 
@@ -252,10 +335,19 @@ class ColorWheel(_colorwheeldotdict):
         return return_array
     
     def luminance_gradient(self, color, n = 5, allow_darker = False, demo = False):
-        """
-        Returns luminant gradient of given color.
-        n: number of colors to generate
-        allow_darker: allows gradient to go darker than the given color
+        """Creates a luminance gradient of colors from the given color.
+
+        Args:
+            color (str): hex code of color or name of color
+            n (int, optional): number of colors to return in the gradient. Defaults to 5.
+            allow_darker (bool, optional): allow the gradient to go darker than the original color. Defaults to False.
+            demo (bool, optional): option to show a matplotlib demo of the gradient. Defaults to False.
+
+        Raises:
+            ValueError: error raised if input is not a hex code or the name of a known color in the ColorWheel.
+
+        Returns:
+            list: list of colors in the luminance gradient
         """
         if color in self.color_list:
             hex_color = self[color]
@@ -284,8 +376,17 @@ class ColorWheel(_colorwheeldotdict):
         return luminance_list
     
     def create_cmap(self, color_list, demo = False):
-        """
-        Creates a matplotlib cmap from given color list.
+        """creates a matplotlib color map using the given color list
+
+        Args:
+            color_list (list): list of hex color code
+            demo (bool, optional): option to diaplsy a matplotlib demo of the colormap. Defaults to False.
+
+        Raises:
+            ValueError: error raised if the given list is not all hex codes or all name sof colors in the ColorWheel
+
+        Returns:
+            matplotlib.cmap: color map of colors
         """
         all_names = 1
         all_hex = 1

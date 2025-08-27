@@ -5,8 +5,13 @@ import numpy as np
 
 class Color():
 
-    def __init__(self, color_hex):
-        """Assumes input is a hex code"""
+    def __init__(self, color_hex:str):
+        """
+        Creates a color object from the given hex code.
+
+        Args:
+            color_hex (str): Hex code for a color.
+        """
         self.color = color_hex
         self.hex = color_hex
         self.rgb = self.__hex_to_rgb(color_hex)
@@ -16,16 +21,42 @@ class Color():
         
     @property
     def dark(self):
+        """Returns a darker shade of the color.
+
+        Returns:
+            str: color hex code
+        """
         return self.__lighten_color(self.color, 1.3)
     
     @property
     def light(self):
+        """Returns a lighter shade of the color.
+
+        Returns:
+            str: color hex code
+        """
         return self.__lighten_color(self.color, .7)
     
     def darker(self, amount = .2):
+        """Method to darken the color by a desired amount
+
+        Args:
+            amount (float, optional): Amount to darken color. Larger value gives darker color. Defaults to .2.
+
+        Returns:
+            str: hex code of color
+        """
         return self.__lighten_color(self.color, 1+amount)
     
     def lighter(self, amount = .2):
+        """Method to lighten color by a desired amount.
+
+        Args:
+            amount (float, optional): Amount to lighten color. Larger value gives lighter color. Defaults to .2.
+
+        Returns:
+            str: hex code of color
+        """
         return self.__lighten_color(self.color, 1-amount)
 
     def __lighten_color(self, color, amount = 1):
